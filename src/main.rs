@@ -4,8 +4,6 @@ extern crate serde;
 extern crate reqwest;
 extern crate separator;
 
-use serde::{Deserialize, Deserializer};
-use serde::de::Error;
 use separator::Separatable;
 
 #[derive(Deserialize, Debug)]
@@ -38,29 +36,39 @@ struct CmcTicker {
     last_24h_volume_usd: String
 }
 
-enum Decimal {
-    Zero
-}
-
 fn main() {
-//    let tick: Ticker = ticker("NANOBTC");
 
     // unwrap return the "Ok" part
     let binance_nano_ticker = binance_ticker("NANOBTC").unwrap();
     let cmc_nano_ticker = cmc_ticker("nano").unwrap();
     let cmc_btc_ticker = cmc_ticker("bitcoin").unwrap();
 
-    println!("Hello {}", binance_nano_ticker.symbol);
     println!("buy: {}", binance_nano_ticker.bid_price);
     println!("sell: {}", binance_nano_ticker.ask_price);
 
-//    print ('vol: %.0f BTC (%s) | color=#000000'% (float(result_cmc_nano[0]['24h_volume_btc']), locale.currency(float(result_cmc_nano[0]['24h_volume_usd']), grouping=True)))
-//    print ('change-24h: %.1f%% | color=#000000'% float(result_cmc_nano[0]['percent_change_24h']))
     println!(
         "vol: {} BTC (${}) | color=#000000",
-        thousands(cmc_nano_ticker.last_24h_volume_btc, Decimal::Zero),
-        thousands(cmc_nano_ticker.last_24h_volume_usd, Decimal::Zero)
+        thousands(cmc_nano_ticker.last_24h_volume_btc, 0),
+        thousands(cmc_nano_ticker.last_24h_volume_usd, 2)
     );
+
+    println!("change-24h: {}% | color=#000000", cmc_nano_ticker.percent_change_24h);
+
+//    let high_usd: f64 = cmc_btc_ticker.price_usd;
+//    let low_usd: f64 = number.parse().unwrap();
+//    let f = 3.99_f64;
+
+    println!("{:?}", f);
+//    high_usd = float(result_cmc_btc[0]['price_usd']) * float(result_binance['highPrice'])
+//    low_usd = float(result_cmc_btc[0]['price_usd']) * float(result_binance['lowPrice'])
+//    print ('high:   %.8f (%s) | color=#000000'% (float(result_binance['highPrice']), locale.currency(high_usd, grouping=True)))
+//    print ('low:    %.8f (%s) | color=#000000'% (float(result_binance['lowPrice']), locale.currency(low_usd, grouping=True)))
+
+//    println!(
+//        "high:   %.8f (%s) | color=#000000",
+//        thousands(cmc_nano_ticker.last_24h_volume_btc, Decimal::Zero),
+//        thousands(cmc_nano_ticker.last_24h_volume_usd, Decimal::Zero)
+//    );
 }
 
 
@@ -95,30 +103,12 @@ fn binance_ticker(symbol: &str) -> Result<BinanceTicker, reqwest::Error> {
     Ok(ticker)
 }
 
-/**
- * Cast float from strings
- * this function is called from annotations with
- * #[serde(deserialize_with = "float_from_str")]
- * @deprecated
- */
-fn float_from_str<'de, D>(deserializer: D) -> Result<f64, D::Error> where D: Deserializer<'de> {
-    let s = <String>::deserialize(deserializer)?;
-
-    let casted: f64 = s.parse().unwrap();
-
-    Ok(casted)
-}
-
-fn thousands(number: String, decimal: Decimal) -> String {
+fn thousands(number: String, decimal: usize) -> String {
 
     let number: f64 = number.parse().unwrap();
 
     // Limit the number of decimals, this convert to string
-    let number = match decimal {
-        Decimal::Zero => format!("{:.0}", number),
-        Decimal::Two => format!("{:.2}", number),
-        Decimal::Eight => format!("{:.8}", number)
-    };
+    let number = format!("{:.*}", decimal, number);
 
     // To separate the thousands, separated_string needs a number, so we re-cast
     let number: f64 = number.parse().unwrap();
