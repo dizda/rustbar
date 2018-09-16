@@ -6,36 +6,14 @@ extern crate separator;
 
 use separator::Separatable;
 
-#[derive(Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-struct BinanceTicker {
-    symbol: String,
-    last_price: String,
-    bid_price: String,
-    ask_price: String,
-    high_price: String,
-    low_price: String
-}
+// internal files
+pub mod math;
+pub mod ticker;
 
-#[derive(Deserialize, Debug)]
-struct CmcTickerResponse {
-    content: CmcTicker
-}
+use math::Math;
+use ticker::binance::BinanceTicker;
+use ticker::cmc::*;
 
-#[derive(Deserialize, Debug)]
-struct CmcTicker {
-    price_usd: String,
-    percent_change_1h: String,
-    percent_change_24h: String,
-    percent_change_7d: String,
-    rank: String,
-    #[serde(rename="24h_volume_btc")]
-    //#[serde(deserialize_with = "float_from_str")]
-    last_24h_volume_btc: String,
-    #[serde(rename="24h_volume_usd")]
-    //#[serde(deserialize_with = "float_from_str")]
-    last_24h_volume_usd: String
-}
 
 fn main() {
 
@@ -128,29 +106,6 @@ fn main() {
     println!("Show KuCoin | color=purple href=https://www.kucoin.com/#/trade.pro/XRB-BTC");
     println!("Show Binance | color=#ff9933 href=https://www.binance.com/tradeDetail.html?symbol=NANO_BTC");
     println!("Powered by Rust!");
-}
-
-pub trait Maths {
-    fn multiply(&self, other: &String, decimals: usize) -> String;
-    fn sub(&self, other: &String, decimals: usize) -> String;
-}
-
-impl Maths for String {
-    fn multiply(&self, right: &String, decimals: usize) -> String {
-        let left: f64 = self.parse().unwrap();
-        let right: f64 = right.parse().unwrap();
-
-        // round up to avoid arithmetic precision issue
-        format!("{:.*}", decimals, (left * right))
-    }
-
-    fn sub(&self, right: &String, decimals: usize) -> String {
-        let left: f64 = self.parse().unwrap();
-        let right: f64 = right.parse().unwrap();
-
-        // round up to avoid arithmetic precision issue
-        format!("{:.*}", decimals, (left - right))
-    }
 }
 
 
