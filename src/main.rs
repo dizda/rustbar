@@ -98,7 +98,8 @@ fn main() {
     let spread_24h_usd = spread_24h_btc.multiply(&cmc_btc_ticker.price_usd, 2);
 
     // gain if we swingtrade with 50k NANO
-    let possible_gain = spread_24h_btc.multiply(&50000_f64.to_string(), 8);
+    let possible_gain_btc = spread_24h_btc.multiply(&50000_f64.to_string(), 2);
+    let possible_gain_usd = possible_gain_btc.multiply(&cmc_btc_ticker.price_usd, 8);
 
     println!(
         "spread: {} (${}) | color=#000000",
@@ -106,9 +107,26 @@ fn main() {
         thousands(&spread_24h_usd, 2)
     );
 
-//    print ('spread:   %.8f (%s) | color=#000000'% (spread24hBTC, locale.currency(spread24hUSD, grouping=True)))
-//    print ('possible gain:   %.2f BTC (%s) | color=#000000'% (possible_gain, locale.currency(possible_gain * float(result_cmc_btc[0]['price_usd']), grouping=True)))
+    println!(
+        "possible gain: {} BTC (${}) | color=#000000",
+        possible_gain_btc,
+        thousands(&possible_gain_usd, 2)
+    );
 
+    println!("---");
+
+    println!("Bitcoin | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC3klEQVR4nGWTTWicVRSGn3Pv/b75sWkSaTQmNSWgiHZjS6DGFCd2pRTcaDcRFy5MaNq6UXCnuNdFF7ZaEUFUsCgIWkTB2lmISN0IdiH+1AaZSir9SSeZmfvde46LQVRcHDiL8/DCeXkEwAwRwQDih48ueO+XVa2l2aYAxEuncHKuyvnN8onPvv43I38vF99u1XeONF4RZMUXEiwqKSuYEooSKYSccjKzU+Fm/zl5ut03Q8ROH/JMrBfVleJMsa08MLg+MEwVcOKCEOpY76ohTvE1VxsrperGs8VEdZArt1UC0H938URtvHZ4cLUfRSgJdYg3kcm9uJmHscvnIfXJnW/B12NtvCzjjXiitvTVEYnv798H7htTU8N5qi7uzocIe1dBPDa4jtRGSd8dR3/7EpoTJpZVnDjQeafZjhXBRHMCrSA00LU2utZGxmYBgcat+PuXkTvmIHZFVRkydsyhqaWxAlOHZTDFqk2oj0PqET8+RPzgEdyO3RQLL4JGsOw0VqDVYkDzZKUgMCxSDClHcJNz4MshlPqQ+uj696AJMZUqKWY26UyTDJMzAGytI+UIsn2a/Ovn2GADv3sJLJMvvAdmw1sdjhPLfxSimKlRbeKm5/F7VkAc+Yd3qD49SvzkKQgN/H1LUG1hqlaI4tDLAdNzLvAkfVPywMv0PG7nfkAID7yAv+sx3O17QBx27WcwBc3qSvPW17bEt+7dh9mwRgnOuh3x9zxOmHsWi11kbBa79gv25wXS+ePDHziXxeEq5UEB2Hr97tcao361dyNHUq/0My0ITfxMi/zjR+SLXyC17RCaGBIbY6HsbeSTzZWfVsVO49ncVcQYzpTb5EBvw4zUV0ydNHcIqYcZBiimrjHqJHbtbFmmg9xyqfpHppd21aem7VVnLIfgQ06QqgrEEbzgCyElS8Abv3d4fvblS0OZ/qfzyZkF7/WZlFnUzBQY3ktHHG1Td6o8vPYfnf8CyHGVDNs26GQAAAAASUVORK5CYII=");
+
+    println!("price:  ${} | color=#000000", thousands(&cmc_btc_ticker.price_usd, 2));
+    println!("change 1h:  {}% | color=#000000", cmc_btc_ticker.percent_change_1h);
+    println!("change 24h:  {}% | color=#000000", cmc_btc_ticker.percent_change_24h);
+    println!("change 7d:  {}% | color=#000000", cmc_btc_ticker.percent_change_7d);
+
+    println!("---");
+
+    println!("Show CoinMarketCap | color=#123def href=https://coinmarketcap.com/currencies/nano/");
+    println!("Show KuCoin | color=purple href=https://www.kucoin.com/#/trade.pro/XRB-BTC");
+    println!("Show Binance | color=#ff9933 href=https://www.binance.com/tradeDetail.html?symbol=NANO_BTC");
 }
 
 pub trait Testt {
