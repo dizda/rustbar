@@ -127,14 +127,15 @@ fn main() {
     println!("Show CoinMarketCap | color=#123def href=https://coinmarketcap.com/currencies/nano/");
     println!("Show KuCoin | color=purple href=https://www.kucoin.com/#/trade.pro/XRB-BTC");
     println!("Show Binance | color=#ff9933 href=https://www.binance.com/tradeDetail.html?symbol=NANO_BTC");
+    println!("Powered by Rust!");
 }
 
-pub trait Testt {
+pub trait Maths {
     fn multiply(&self, other: &String, decimals: usize) -> String;
     fn sub(&self, other: &String, decimals: usize) -> String;
 }
 
-impl Testt for String {
+impl Maths for String {
     fn multiply(&self, right: &String, decimals: usize) -> String {
         let left: f64 = self.parse().unwrap();
         let right: f64 = right.parse().unwrap();
@@ -159,12 +160,8 @@ fn cmc_ticker(symbol: &str) -> Result<CmcTicker, reqwest::Error> {
         symbol = symbol
     );
 
-//    println!("Query {}...", request_url);
     let mut response = reqwest::get(&request_url)?;
-
     let ticker: CmcTickerResponse = response.json()?;
-
-//    println!("{:?}", ticker);
 
     Ok(ticker.content)
 }
@@ -175,11 +172,8 @@ fn binance_ticker(symbol: &str) -> Result<BinanceTicker, reqwest::Error> {
         symbol = symbol
     );
 
-//    println!("Query {}...", request_url);
     let mut response = reqwest::get(&request_url)?;
-
     let ticker: BinanceTicker = response.json()?;
-//    println!("{:?}", ticker);
 
     Ok(ticker)
 }
