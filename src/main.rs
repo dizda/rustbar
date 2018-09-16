@@ -2,16 +2,15 @@
 extern crate serde_derive;
 extern crate separator;
 
-use separator::Separatable;
-
 // internal files
 pub mod math;
 pub mod ticker;
+mod util;
 
 use math::Math;
 use ticker::binance::BinanceTicker;
 use ticker::cmc::*;
-
+use util::thousands;
 
 fn main() {
 
@@ -104,17 +103,4 @@ fn main() {
     println!("Show KuCoin | color=purple href=https://www.kucoin.com/#/trade.pro/XRB-BTC");
     println!("Show Binance | color=#ff9933 href=https://www.binance.com/tradeDetail.html?symbol=NANO_BTC");
     println!("Powered by Rust!");
-}
-
-fn thousands(number: &String, decimal: usize) -> String {
-
-    let number: f64 = number.parse().unwrap();
-
-    // Limit the number of decimals, this convert to string
-    let number = format!("{:.*}", decimal, number);
-
-    // To separate the thousands, separated_string needs a number, so we re-cast
-    let number: f64 = number.parse().unwrap();
-
-    number.separated_string()
 }
