@@ -1,3 +1,6 @@
+extern crate serde;
+extern crate reqwest;
+
 #[derive(Deserialize, Debug)]
 pub struct CmcTickerResponse {
     pub content: CmcTicker
@@ -16,4 +19,20 @@ pub struct CmcTicker {
     #[serde(rename="24h_volume_usd")]
     //#[serde(deserialize_with = "float_from_str")]
     pub last_24h_volume_usd: String
+}
+
+impl CmcTicker {
+
+    pub fn ticker(symbol: &str) -> Result<CmcTicker, reqwest::Error> {
+        let request_url = format!(
+            "https://api.coinmarketcap.com/v1/ticker/{symbol}/?convert=BTC",
+            symbol = symbol
+        );
+
+        let mut response = reqwest::get(&request_url)?;
+        let ticker: CmcTickerResponse = response.json()?;
+
+        Ok(ticker.content)
+    }
+
 }

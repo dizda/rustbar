@@ -1,7 +1,5 @@
 #[macro_use]
 extern crate serde_derive;
-extern crate serde;
-extern crate reqwest;
 extern crate separator;
 
 use separator::Separatable;
@@ -18,9 +16,9 @@ use ticker::cmc::*;
 fn main() {
 
     // unwrap return the "Ok" part
-    let binance_nano_ticker = binance_ticker("NANOBTC").unwrap();
-    let cmc_nano_ticker = cmc_ticker("nano").unwrap();
-    let cmc_btc_ticker = cmc_ticker("bitcoin").unwrap();
+    let binance_nano_ticker = BinanceTicker::ticker("NANOBTC").unwrap();
+    let cmc_nano_ticker = CmcTicker::ticker("nano").unwrap();
+    let cmc_btc_ticker = CmcTicker::ticker("bitcoin").unwrap();
     let img_up = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAyQACAALwzISXAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQHACkSBTjB+AAAALNJREFUOMvVk70NAjEMhb87WYiGBZAQU7ABNSVSWpZgEEagsJDoKBELUCEKFuBuCKTw0xyQC0lICe5i+/k9/wT+3opUUJQhcAUqa8I5ZQT4tANwioGTCkQZA9vmOQE2oUJFhL0DXBz33RpKUfCLfLTQJMx9IlEWuQr6QB3prGtNS1lwiMvEYo7ekNsKRBkB+y+rH1hDFVOwy7ids+gbVzrsM6CXeYDTF85xroB1ZoHb73ymB5RhJkpZTihGAAAAAElFTkSuQmCC";
     let img_down = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QABACnAADQ9FZaAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQHACQ1FZwK3gAAAMRJREFUOMvNkjEKAjEQRZ+jKNjYKh5AbzCdjVcQj+BFPIKlp7EMeAJrUbASQVCEr80uG9cNbqe/Cgn/5WUI/DqNfBHM+kCzbs+lPUAr2pwBq5qABbB+M8gszkDvS/kOdAG5VBgEM4ApsP0CGLukjxlEoA0wSZR3Lo0qhxhZDIBDAmDA0wsBLD51CZeOwLKivHbprZx6AkAHuEXbD5fawYwywMqAzOKeDTTPvKqcTGZBMLsGs0utn5gADYEHcKp9e9ni//MCDtNCE3qjsIwAAAAASUVORK5CYII=";
     let percent_change_1h: f32 = cmc_nano_ticker.percent_change_1h.parse().unwrap();
@@ -106,31 +104,6 @@ fn main() {
     println!("Show KuCoin | color=purple href=https://www.kucoin.com/#/trade.pro/XRB-BTC");
     println!("Show Binance | color=#ff9933 href=https://www.binance.com/tradeDetail.html?symbol=NANO_BTC");
     println!("Powered by Rust!");
-}
-
-
-fn cmc_ticker(symbol: &str) -> Result<CmcTicker, reqwest::Error> {
-    let request_url = format!(
-        "https://api.coinmarketcap.com/v1/ticker/{symbol}/?convert=BTC",
-        symbol = symbol
-    );
-
-    let mut response = reqwest::get(&request_url)?;
-    let ticker: CmcTickerResponse = response.json()?;
-
-    Ok(ticker.content)
-}
-
-fn binance_ticker(symbol: &str) -> Result<BinanceTicker, reqwest::Error> {
-    let request_url = format!(
-        "https://api.binance.com/api/v1/ticker/24hr?symbol={symbol}",
-        symbol = symbol
-    );
-
-    let mut response = reqwest::get(&request_url)?;
-    let ticker: BinanceTicker = response.json()?;
-
-    Ok(ticker)
 }
 
 fn thousands(number: &String, decimal: usize) -> String {
