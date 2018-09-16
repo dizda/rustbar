@@ -56,29 +56,21 @@ fn main() {
 
     println!(
         "{} (${}) | image={} color=#000000",
-        thousands(&binance_nano_ticker.last_price, 8),
+        binance_nano_ticker.last_price,
         thousands(&cmc_nano_ticker.price_usd, 2),
         img
     );
 
-
-//    def flow():
-//    if result_cmc_nano[0]['percent_change_1h'] > '0':
-//        print (' %.8f ($%.2f) | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAyQACAALwzISXAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQHACkSBTjB+AAAALNJREFUOMvVk70NAjEMhb87WYiGBZAQU7ABNSVSWpZgEEagsJDoKBELUCEKFuBuCKTw0xyQC0lICe5i+/k9/wT+3opUUJQhcAUqa8I5ZQT4tANwioGTCkQZA9vmOQE2oUJFhL0DXBz33RpKUfCLfLTQJMx9IlEWuQr6QB3prGtNS1lwiMvEYo7ekNsKRBkB+y+rH1hDFVOwy7ids+gbVzrsM6CXeYDTF85xroB1ZoHb73ymB5RhJkpZTihGAAAAAElFTkSuQmCC color=#000000'% (float(result_binance['lastPrice']), float(result_cmc_nano[0]['price_usd'])) )
-//    else:
-//    print (' %.8f ($%.2f) | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QABACnAADQ9FZaAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQHACQ1FZwK3gAAAMRJREFUOMvNkjEKAjEQRZ+jKNjYKh5AbzCdjVcQj+BFPIKlp7EMeAJrUbASQVCEr80uG9cNbqe/Cgn/5WUI/DqNfBHM+kCzbs+lPUAr2pwBq5qABbB+M8gszkDvS/kOdAG5VBgEM4ApsP0CGLukjxlEoA0wSZR3Lo0qhxhZDIBDAmDA0wsBLD51CZeOwLKivHbprZx6AkAHuEXbD5fawYwywMqAzOKeDTTPvKqcTGZBMLsGs0utn5gADYEHcKp9e9ni//MCDtNCE3qjsIwAAAAASUVORK5CYII= color=#000000'% (float(result_binance['lastPrice']), float(result_cmc_nano[0]['price_usd'])) )
-//
-//    flow()
-
     println!("---");
 
+    println!("NANO | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUxpcVSJykmQ4kaS3lKLzWyUxESF2V+W0FKV7lGJyU6O4EmR3k6P3lSU6EyP3kmT30qP4keU3kCT5kWS4UiR4VKL4EOT40OQ6ESS5UWQ5kiQ4v2G/RwAAAAKdFJOUwDr///+EP4F/tfCPIxYAAAAQ0lEQVQY02NgoBngkoAy+ATBFIukFITPzs0LJDlEGBkYmJiAXGFxsDAHMztEgJNZFMQVgGpnFWMD0/w8UAEhLto5GgDaMgGRTwkAAgAAAABJRU5ErkJggg==");
     println!("buy: {} | color=green", binance_nano_ticker.bid_price);
     println!("sell: {} | color=red", binance_nano_ticker.ask_price);
 
     println!(
         "vol: {} BTC (${}) | color=#000000",
         thousands(&cmc_nano_ticker.last_24h_volume_btc, 0),
-        thousands(&cmc_nano_ticker.last_24h_volume_usd, 2)
+        thousands(&cmc_nano_ticker.last_24h_volume_usd, 0)
     );
 
     println!("change-24h: {}% | color=#000000", cmc_nano_ticker.percent_change_24h);
@@ -86,28 +78,59 @@ fn main() {
     println!(
         "high: {} (${}) | color=#000000",
         binance_nano_ticker.high_price,
-        thousands(&cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.high_price), 2)
+        thousands(&cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.high_price, 2), 2)
     );
     println!(
         "low: {} (${}) | color=#000000",
         binance_nano_ticker.low_price,
-        thousands(&cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.low_price), 2)
+        thousands(&cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.low_price, 2), 2)
     );
 
     println!("price: ${} | color=#000000", thousands(&cmc_nano_ticker.price_usd, 2));
     println!("rank: #{} | color=#000000", cmc_nano_ticker.rank);
+
+    println!("---");
+
+
+    println!("NANO daily-trading | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUxpcVSJykmQ4kaS3lKLzWyUxESF2V+W0FKV7lGJyU6O4EmR3k6P3lSU6EyP3kmT30qP4keU3kCT5kWS4UiR4VKL4EOT40OQ6ESS5UWQ5kiQ4v2G/RwAAAAKdFJOUwDr///+EP4F/tfCPIxYAAAAQ0lEQVQY02NgoBngkoAy+ATBFIukFITPzs0LJDlEGBkYmJiAXGFxsDAHMztEgJNZFMQVgGpnFWMD0/w8UAEhLto5GgDaMgGRTwkAAgAAAABJRU5ErkJggg==");
+
+    let spread_24h_btc = binance_nano_ticker.high_price.sub(&binance_nano_ticker.low_price, 8);
+    let spread_24h_usd = spread_24h_btc.multiply(&cmc_btc_ticker.price_usd, 2);
+
+    // gain if we swingtrade with 50k NANO
+    let possible_gain = spread_24h_btc.multiply(&50000_f64.to_string(), 8);
+
+    println!(
+        "spread: {} (${}) | color=#000000",
+        spread_24h_btc,
+        thousands(&spread_24h_usd, 2)
+    );
+
+//    print ('spread:   %.8f (%s) | color=#000000'% (spread24hBTC, locale.currency(spread24hUSD, grouping=True)))
+//    print ('possible gain:   %.2f BTC (%s) | color=#000000'% (possible_gain, locale.currency(possible_gain * float(result_cmc_btc[0]['price_usd']), grouping=True)))
+
 }
 
 pub trait Testt {
-    fn multiply(&self, other: &String) -> String;
+    fn multiply(&self, other: &String, decimals: usize) -> String;
+    fn sub(&self, other: &String, decimals: usize) -> String;
 }
 
 impl Testt for String {
-    fn multiply(&self, right: &String) -> String {
+    fn multiply(&self, right: &String, decimals: usize) -> String {
         let left: f64 = self.parse().unwrap();
         let right: f64 = right.parse().unwrap();
 
-        (left * right).to_string()
+        // round up to avoid arithmetic precision issue
+        format!("{:.*}", decimals, (left * right))
+    }
+
+    fn sub(&self, right: &String, decimals: usize) -> String {
+        let left: f64 = self.parse().unwrap();
+        let right: f64 = right.parse().unwrap();
+
+        // round up to avoid arithmetic precision issue
+        format!("{:.*}", decimals, (left - right))
     }
 }
 
