@@ -43,8 +43,8 @@ fn main() {
     let cmc_nano_ticker = cmc_ticker("nano").unwrap();
     let cmc_btc_ticker = cmc_ticker("bitcoin").unwrap();
 
-    println!("buy: {}", binance_nano_ticker.bid_price);
-    println!("sell: {}", binance_nano_ticker.ask_price);
+    println!("buy: {} | color=green", binance_nano_ticker.bid_price);
+    println!("sell: {} | color=red", binance_nano_ticker.ask_price);
 
     println!(
         "vol: {} BTC (${}) | color=#000000",
@@ -54,21 +54,32 @@ fn main() {
 
     println!("change-24h: {}% | color=#000000", cmc_nano_ticker.percent_change_24h);
 
-//    let high_usd: f64 = cmc_btc_ticker.price_usd;
-//    let low_usd: f64 = number.parse().unwrap();
-//    let f = 3.99_f64;
+    println!(
+        "high: {} (${}) | color=#000000",
+        binance_nano_ticker.high_price,
+        thousands(cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.high_price), 2)
+    );
+    println!(
+        "low: {} (${}) | color=#000000",
+        binance_nano_ticker.low_price,
+        thousands(cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.low_price), 2)
+    );
 
-    println!("{:?}", f);
-//    high_usd = float(result_cmc_btc[0]['price_usd']) * float(result_binance['highPrice'])
-//    low_usd = float(result_cmc_btc[0]['price_usd']) * float(result_binance['lowPrice'])
-//    print ('high:   %.8f (%s) | color=#000000'% (float(result_binance['highPrice']), locale.currency(high_usd, grouping=True)))
-//    print ('low:    %.8f (%s) | color=#000000'% (float(result_binance['lowPrice']), locale.currency(low_usd, grouping=True)))
+    println!("price: ${} | color=#000000", thousands(cmc_nano_ticker.price_usd, 2));
+    println!("rank: #{} | color=#000000", cmc_nano_ticker.rank);
+}
 
-//    println!(
-//        "high:   %.8f (%s) | color=#000000",
-//        thousands(cmc_nano_ticker.last_24h_volume_btc, Decimal::Zero),
-//        thousands(cmc_nano_ticker.last_24h_volume_usd, Decimal::Zero)
-//    );
+pub trait Testt {
+    fn multiply(&self, other: &String) -> String;
+}
+
+impl Testt for String {
+    fn multiply(&self, right: &String) -> String {
+        let left: f64 = self.parse().unwrap();
+        let right: f64 = right.parse().unwrap();
+
+        (left * right).to_string()
+    }
 }
 
 
@@ -78,12 +89,12 @@ fn cmc_ticker(symbol: &str) -> Result<CmcTicker, reqwest::Error> {
         symbol = symbol
     );
 
-    println!("Query {}...", request_url);
+//    println!("Query {}...", request_url);
     let mut response = reqwest::get(&request_url)?;
 
     let ticker: CmcTickerResponse = response.json()?;
 
-    println!("{:?}", ticker);
+//    println!("{:?}", ticker);
 
     Ok(ticker.content)
 }
@@ -94,11 +105,11 @@ fn binance_ticker(symbol: &str) -> Result<BinanceTicker, reqwest::Error> {
         symbol = symbol
     );
 
-    println!("Query {}...", request_url);
+//    println!("Query {}...", request_url);
     let mut response = reqwest::get(&request_url)?;
 
     let ticker: BinanceTicker = response.json()?;
-    println!("{:?}", ticker);
+//    println!("{:?}", ticker);
 
     Ok(ticker)
 }
