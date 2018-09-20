@@ -29,10 +29,9 @@ impl CmcTicker {
             symbol = symbol
         );
 
-        let mut response = reqwest::get(&request_url)?;
-        let ticker: CmcTickerResponse = response.json()?;
+        let response: CmcTickerResponse = reqwest::get(&request_url)?.json()?;
 
-        Ok(ticker.content)
+        Ok(response.content)
     }
 
 }

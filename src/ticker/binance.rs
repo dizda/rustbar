@@ -20,10 +20,9 @@ impl BinanceTicker {
             symbol = symbol
         );
 
-        let mut response = reqwest::get(&request_url)?;
-        let ticker: BinanceTicker = response.json()?;
+        let response = reqwest::get(&request_url)?.json()?;
 
-        Ok(ticker)
+        Ok(response)
     }
 
 }
