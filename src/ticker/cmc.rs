@@ -29,7 +29,10 @@ impl CmcTicker {
             symbol = symbol
         );
 
-        let response: CmcTickerResponse = reqwest::get(&request_url)?.json()?;
+        let response: CmcTickerResponse = reqwest::get(&request_url)
+            .expect("Failed to connect to CoinMarketCap.")
+            .json()?
+        ;;
 
         Ok(response.content)
     }

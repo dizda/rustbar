@@ -20,7 +20,10 @@ impl BinanceTicker {
             symbol = symbol
         );
 
-        let response = reqwest::get(&request_url)?.json()?;
+        let response = reqwest::get(&request_url)
+            .expect("Failed to connect to Binance.")
+            .json()?
+        ;
 
         Ok(response)
     }
