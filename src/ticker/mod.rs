@@ -47,7 +47,7 @@ pub fn get_stats() -> CoinStats {
     let spread_24h_usd = thousands(&spread_24h_btc.multiply(&cmc_btc_ticker.price_usd, 2), 2);
 
     // gain if we swingtrade with 50k NANO
-    let possible_gain_btc = spread_24h_btc.multiply(&50000_f64.to_string(), 2);
+    let possible_gain_btc = spread_24h_btc.multiply(&100000_f64.to_string(), 2);
     let possible_gain_usd = thousands(&possible_gain_btc.multiply(&cmc_btc_ticker.price_usd, 8), 2);
 
     let daily_trading = DailyTrading {
