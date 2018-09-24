@@ -6,7 +6,7 @@ pub struct CmcTickerResponse {
     pub content: CmcTicker
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct CmcTicker {
     pub price_usd: String,
     pub percent_change_1h: String,

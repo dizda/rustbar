@@ -7,4 +7,7 @@ authors = ["Jonathan Dizdarevic <dizzda@gmail.com>"]
 reqwest = "^0.8.8"
 serde_derive = "1.0.78"
 serde = "1.0.78"
+serde_json = "1.0.30"
 separator = "0.3.1"
+clap = "2.32.0"
+hyper = "0.12"
