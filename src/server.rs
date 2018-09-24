@@ -7,7 +7,7 @@ use ticker;
 pub fn listen() {
 //    pretty_env_logger::init();
 
-    let addr = ([127, 0, 0, 1], 3000).into();
+    let addr = ([0, 0, 0, 0], 3000).into();
 
     // new_service is run for each connection, creating a 'service'
     // to handle requests for that specific connection.
