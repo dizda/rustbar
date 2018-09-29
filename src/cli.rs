@@ -41,7 +41,7 @@ pub fn print_to_stdout() -> Result<(), Box<dyn Error>> {
 
     println!("NANO daily-trading | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUxpcVSJykmQ4kaS3lKLzWyUxESF2V+W0FKV7lGJyU6O4EmR3k6P3lSU6EyP3kmT30qP4keU3kCT5kWS4UiR4VKL4EOT40OQ6ESS5UWQ5kiQ4v2G/RwAAAAKdFJOUwDr///+EP4F/tfCPIxYAAAAQ0lEQVQY02NgoBngkoAy+ATBFIukFITPzs0LJDlEGBkYmJiAXGFxsDAHMztEgJNZFMQVgGpnFWMD0/w8UAEhLto5GgDaMgGRTwkAAgAAAABJRU5ErkJggg==");
 
-    println!("spread: {} (${}) | color=#000000", stats.daily_trading.spread_btc, stats.daily_trading.spread_usd);
+    println!("swing: {} (${}) | color=#000000", stats.daily_trading.spread_btc, stats.daily_trading.spread_usd);
     println!("possible gain: {} BTC (${}) | color=#000000", stats.daily_trading.possible_gain_btc, stats.daily_trading.possible_gain_usd);
 
     println!("---");
