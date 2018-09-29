@@ -11,16 +11,25 @@ mod util;
 mod cli;
 mod server;
 
-use std::error::Error;
+use std::process;
 
-pub fn run(is_api_server: bool) -> Result<(), Box<dyn Error>> {
+pub fn run(is_api_server: bool) {
+
+    // run in cli or api
     if is_api_server == false {
-        // will simply the result to stdout
-        cli::print_to_stdout()?;
+
+        // cli
+        // will simply print the result to stdout
+        if let Err(e) = cli::print_to_stdout() {
+            // On error, simply print out the error then exit properly
+            // avoid a panic.
+            println!("🤕");
+            println!("Application error: {}", e);
+            process::exit(1);
+        }
     } else {
+
         // launch an API server
         server::listen();
     }
-
-    Ok(())
 }

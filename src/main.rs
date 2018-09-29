@@ -2,7 +2,6 @@ extern crate clap;
 extern crate rustbar;
 
 use clap::{Arg, App};
-use std::process;
 
 fn main() {
 
@@ -21,11 +20,5 @@ fn main() {
 
     let is_api_server = matches.is_present("server");
 
-    if let Err(e) = rustbar::run(is_api_server) {
-        // On error, simply print out the error then exit properly
-        // avoid a panic.
-        println!("🤕");
-        println!("Application error: {}", e);
-        process::exit(1);
-    }
+    rustbar::run(is_api_server);
 }
