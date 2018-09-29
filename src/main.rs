@@ -1,16 +1,5 @@
-#[macro_use]
-extern crate serde_derive;
-extern crate separator;
 extern crate clap;
-extern crate serde_json;
-extern crate hyper;
-
-// internal files
-pub mod math;
-pub mod ticker;
-mod util;
-mod cli;
-mod server;
+extern crate rustbar;
 
 use clap::{Arg, App};
 use std::process;
@@ -32,18 +21,11 @@ fn main() {
 
     let is_api_server = matches.is_present("server");
 
-    if is_api_server == false {
-
-        if let Err(e) = cli::print_to_stdout() {
-            // On error, simply print out the error then exit properly
-            // avoid a panic.
-            println!("🤕");
-            println!("Application error: {}", e);
-            process::exit(1);
-        }
-
-    } else {
-        server::listen();
+    if let Err(e) = rustbar::run(is_api_server) {
+        // On error, simply print out the error then exit properly
+        // avoid a panic.
+        println!("🤕");
+        println!("Application error: {}", e);
+        process::exit(1);
     }
-
 }
