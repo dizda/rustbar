@@ -37,6 +37,7 @@ fn main() {
         if let Err(e) = cli::print_to_stdout() {
             // On error, simply print out the error then exit properly
             // avoid a panic.
+            println!("🤕");
             println!("Application error: {}", e);
             process::exit(1);
         }
