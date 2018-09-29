@@ -13,6 +13,7 @@ mod cli;
 mod server;
 
 use clap::{Arg, App};
+use std::process;
 
 fn main() {
 
@@ -32,7 +33,14 @@ fn main() {
     let is_api_server = matches.is_present("server");
 
     if is_api_server == false {
-        cli::print_to_stdout();
+
+        if let Err(e) = cli::print_to_stdout() {
+            // On error, simply print out the error then exit properly
+            // avoid a panic.
+            println!("Application error: {}", e);
+            process::exit(1);
+        }
+
     } else {
         server::listen();
     }

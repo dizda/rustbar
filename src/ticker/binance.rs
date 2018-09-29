@@ -20,12 +20,7 @@ impl BinanceTicker {
             symbol = symbol
         );
 
-        let mut response = match reqwest::get(&request_url) {
-            Ok(content) => { content },
-            Err(error) => { panic!("Can't connect to Binance: {}", error); }
-        };
-
-        let response: BinanceTicker = response.json()?;
+        let response: BinanceTicker = reqwest::get(&request_url)?.json()?;
 
         Ok(response)
     }

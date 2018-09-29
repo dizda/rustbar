@@ -3,6 +3,7 @@ use hyper::service::service_fn_ok;
 use hyper::rt::{self, Future};
 use serde_json;
 use ticker;
+use ticker::CoinStats;
 
 pub fn listen() {
 //    pretty_env_logger::init();
@@ -18,30 +19,28 @@ pub fn listen() {
         service_fn_ok(|_| {
 
             // generate stats
-            let stats = ticker::get_stats();
-
-            let res = match serde_json::to_string(&stats) {
-                Ok(json) => {
-                    // return a json response
-                    Response::builder()
-                        .header(header::CONTENT_TYPE, "application/json")
-                        .body(Body::from(json))
-                        .unwrap()
-                }
-                // This is unnecessary here because we know
-                // this can't fail. But if we were serializing json that came from another
-                // source we could handle an error like this.
+            let stats = match ticker::get_stats() {
+                Ok(s)  => s,
                 Err(e) => {
-                    eprintln!("serializing json: {}", e);
+                    eprintln!("Can't call APIs: {}", e);
 
-                    Response::builder()
-                        .status(StatusCode::INTERNAL_SERVER_ERROR)
-                        .body(Body::from("Internal Server Error"))
-                        .unwrap()
+                    // cast error from std::error::Error to String
+                    let error = JsonError { error: e.to_string() };
+                    // serialize the error to JSON
+                    let json_err = serde_json::to_string(&error).unwrap();
+
+                    // return a proper 500 page, with the error response if any
+                    return Response::builder()
+                                    .status(StatusCode::INTERNAL_SERVER_ERROR)
+                                    .header(header::CONTENT_TYPE, "application/json")
+                                    .body(Body::from(json_err))
+                                    .unwrap();
                 }
+
             };
 
-            res
+            // serialize body and create the response
+            serialize_response(&stats)
 
         })
     };
@@ -53,4 +52,32 @@ pub fn listen() {
     println!("Listening on http://{}", addr);
 
     rt::run(server);
+}
+
+#[derive(Serialize)]
+struct JsonError {
+    error: String
+}
+
+fn serialize_response(stats: &CoinStats) -> Response<Body> {
+    match serde_json::to_string(&stats) {
+        Ok(json) => {
+            // return a json response
+            Response::builder()
+                .header(header::CONTENT_TYPE, "application/json")
+                .body(Body::from(json))
+                .unwrap()
+        }
+        // This is unnecessary here because we know
+        // this can't fail. But if we were serializing json that came from another
+        // source we could handle an error like this.
+        Err(e) => {
+            eprintln!("serializing json: {}", e);
+
+            Response::builder()
+                .status(StatusCode::INTERNAL_SERVER_ERROR)
+                .body(Body::from("Internal Server Error"))
+                .unwrap()
+        }
+    }
 }

@@ -5,6 +5,7 @@ use math::Math;
 use ticker::binance::BinanceTicker;
 use ticker::cmc::*;
 use util::thousands;
+use std::error::Error;
 
 // NANO compiled stats
 #[derive(Serialize, Debug)]
@@ -36,11 +37,11 @@ pub struct DailyTrading {
     pub possible_gain_usd: String
 }
 
-pub fn get_stats() -> CoinStats {
+pub fn get_stats() -> Result<CoinStats, Box<dyn Error>> {
     // unwrap return the "Ok" part
-    let binance_nano_ticker = BinanceTicker::ticker("NANOBTC").unwrap();
-    let cmc_nano_ticker = CmcTicker::ticker("nano").unwrap();
-    let cmc_btc_ticker = CmcTicker::ticker("bitcoin").unwrap();
+    let binance_nano_ticker = BinanceTicker::ticker("NANOBTC")?;
+    let cmc_nano_ticker = CmcTicker::ticker("nano")?;
+    let cmc_btc_ticker = CmcTicker::ticker("bitcoin")?;
 
     // Calculate
     let spread_24h_btc = binance_nano_ticker.high_price.sub(&binance_nano_ticker.low_price, 8);
@@ -76,5 +77,5 @@ pub fn get_stats() -> CoinStats {
         daily_trading
     };
 
-    ticker
+    Ok(ticker)
 }
