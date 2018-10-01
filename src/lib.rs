@@ -24,6 +24,7 @@ pub fn run(is_api_server: bool) {
             // On error, simply print out the error then exit properly
             // avoid a panic.
             println!("🤕");
+            println!("---"); // avoid bitbar to switch
             println!("Application error: {}", e);
             process::exit(1);
         }
