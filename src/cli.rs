@@ -30,7 +30,7 @@ pub fn print_to_touch_bar(touch_bar: &str) -> Result<(), Box<dyn Error>> {
         amount = String::from("Error!");
     } else {
         amount = String::from(amount).multiply(&stats.bitcoin.price_usd, 2);
-        amount = thousands(&amount, 2);
+        amount = "$".to_owned() + &thousands(&amount, 2);
     }
 
     script.execute_with_params(TouchBarParams {
