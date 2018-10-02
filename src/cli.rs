@@ -1,6 +1,52 @@
 use ticker;
 use util::thousands;
 use std::error::Error;
+use osascript::JavaScript;
+use math::Math;
+
+#[derive(Serialize)]
+struct TouchBarParams {
+    label: String
+}
+
+pub fn print_to_touch_bar(touch_bar: &str) -> Result<(), Box<dyn Error>> {
+    let stats = ticker::get_stats()?;
+    let script = JavaScript::new("
+        var BetterTouchTool = Application('BetterTouchTool');
+
+        BetterTouchTool.update_touch_bar_widget('1A9010BF-D26E-4016-BD99-5D78CA8496FF',
+        {
+            text: $params.label
+        });
+    ");
+
+    let mut amount = String::from(touch_bar);
+    // strip "," for thousands
+    amount.retain(|c| c != ',');
+
+    print!("{:?}", amount);
+
+
+    if !check_if_number(amount.clone()) {
+        // if it's not a number we exit
+        amount = String::from("Error!");
+    } else {
+        amount = String::from(amount).multiply(&stats.bitcoin.price_usd, 2);
+        amount = thousands(&amount, 2);
+    }
+
+    script.execute_with_params(TouchBarParams {
+        label: amount
+    }).unwrap_or_else(|err| {
+//        eprintln!("Problem sending AppleScript: {}", err);
+
+        // needs to implement the correct std::error::Error Trait
+//        Err(err.to_string())
+    });
+
+    Ok(())
+}
+
 
 /**
  * Used by BitBar
@@ -61,4 +107,22 @@ pub fn print_to_stdout() -> Result<(), Box<dyn Error>> {
     println!("Powered by Rust!");
 
     Ok(())
+}
+
+fn check_if_number(number: String) -> bool {
+    number.trim().parse::<f64>().is_ok()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn check_if_number_asserts() {
+        assert!(check_if_number(String::from("33")));
+        assert!(check_if_number(String::from("121200.21")));
+        assert!(!check_if_number(String::from("qdqd")));
+        assert!(check_if_number(String::from("0.000021")));
+        assert!(!check_if_number(String::from("333,333.22")));
+    }
 }
