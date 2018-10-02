@@ -21,13 +21,11 @@ pub fn print_to_touch_bar(touch_bar: &str) -> Result<(), Box<dyn Error>> {
     ");
 
     let mut amount = String::from(touch_bar);
-    // strip "," for thousands
+    // strip "," from thousands if any
     amount.retain(|c| c != ',');
 
-    print!("{:?}", amount);
 
-
-    if !check_if_number(amount.clone()) {
+    if !check_if_number(amount.clone()) { // clone the value because it goes to a different scope which won't return the value
         // if it's not a number we exit
         amount = String::from("Error!");
     } else {
