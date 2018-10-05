@@ -6,21 +6,32 @@ use math::Math;
 
 #[derive(Serialize)]
 struct TouchBarParams {
+    widget_uuid: String,
     label: String
 }
 
-pub fn print_to_touch_bar(touch_bar: &str) -> Result<(), Box<dyn Error>> {
+pub fn print_to_touch_bar(amount: &str) -> Result<(), Box<dyn Error>> {
+    let widget_btc = String::from("1A9010BF-D26E-4016-BD99-5D78CA8496FF");
+    let widget_nano = String::from("92B67153-3DF5-4C7A-9710-4E2AD52C0C88");
     let stats = ticker::get_stats()?;
+
+    update_touch_bar(widget_btc, stats.bitcoin.price_usd, amount);
+    update_touch_bar(widget_nano, stats.last_price_usd, amount);
+
+    Ok(())
+}
+
+fn update_touch_bar(widget_uuid: String, ticker_price: String, amount: &str) {
     let script = JavaScript::new("
         var BetterTouchTool = Application('BetterTouchTool');
 
-        BetterTouchTool.update_touch_bar_widget('1A9010BF-D26E-4016-BD99-5D78CA8496FF',
+        BetterTouchTool.update_touch_bar_widget($params.widget_uuid,
         {
             text: $params.label
         });
     ");
 
-    let mut amount = String::from(touch_bar);
+    let mut amount = String::from(amount);
     // strip "," from thousands if any
     amount.retain(|c| c != ',');
 
@@ -29,11 +40,12 @@ pub fn print_to_touch_bar(touch_bar: &str) -> Result<(), Box<dyn Error>> {
         // if it's not a number we exit
         amount = String::from("Error!");
     } else {
-        amount = String::from(amount).multiply(&stats.bitcoin.price_usd, 2);
+        amount = String::from(amount).multiply(&ticker_price, 2);
         amount = "$".to_owned() + &thousands(&amount, 2);
     }
 
     script.execute_with_params(TouchBarParams {
+        widget_uuid,
         label: amount
     }).unwrap_or_else(|err| {
 //        eprintln!("Problem sending AppleScript: {}", err);
@@ -41,8 +53,6 @@ pub fn print_to_touch_bar(touch_bar: &str) -> Result<(), Box<dyn Error>> {
         // needs to implement the correct std::error::Error Trait
 //        Err(err.to_string())
     });
-
-    Ok(())
 }
 
 
