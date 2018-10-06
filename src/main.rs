@@ -14,18 +14,17 @@ fn main() {
                 .short("s")
                 .long("server")
                 .help("Launch an API daemon."),
-            Arg::with_name("touch-bar")
-                .short("t")
-                .long("touch-bar")
-                .value_name("price")
-                .required(false)
-                .help("Send a price in BTC or NANO to the MacBook touch bar")
+//            Arg::with_name("touch-bar")
+//                .short("t")
+//                .long("touch-bar")
+//                .value_name("price")
+//                .required(false)
+//                .help("Send a price in BTC or NANO to the MacBook touch bar")
         ])
         .get_matches()
     ;
 
     let is_api_server = matches.is_present("server");
-    let touch_bar = matches.value_of("touch-bar").unwrap_or_default();
 
-    rustbar::run(is_api_server, touch_bar);
+    rustbar::run(is_api_server);
 }
