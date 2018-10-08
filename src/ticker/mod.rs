@@ -40,23 +40,17 @@ pub struct DailyTrading {
     pub possible_gain_usd: String
 }
 
-pub fn get_stats() -> CoinStats {
+// Get tickers then save them in Redis for 60s
+pub fn get_stats() -> Result<CoinStats, Box<dyn Error>> {
     let con = redis_db::connection();
-    let coin_stats = compute().unwrap();
-
-//    let coin_stats = match compute() {
-//        Ok(s)  => s,
-//        Err(e) => {
-//            eprintln!("Can't call APIs: {}", e);
-//
-//        }
-//    };
+    let coin_stats = compute()?;
 
     redis_db::save(&con, "ticker", &coin_stats, 60);
 
-    coin_stats
+    Ok(coin_stats)
 }
 
+// Build the struct
 fn compute() -> Result<CoinStats, Box<dyn Error>> {
     // unwrap return the "Ok" part
     let binance_nano_ticker = BinanceTicker::ticker("NANOBTC")?;

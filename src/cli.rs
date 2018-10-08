@@ -70,7 +70,7 @@ pub fn print_to_stdout() -> Result<(), Box<dyn Error>> {
     let img: &str;
 
     // generate stats, if any errors, they will be delegated to the caller (main.rs)
-    let stats = ticker::get_stats();
+    let stats = ticker::get_stats()?;
 
     // cast to float
     let percent_change_1h: f32 = stats.change1h.parse().unwrap();

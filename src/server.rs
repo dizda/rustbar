@@ -25,7 +25,7 @@ fn index(info: Path<()>) -> Result<String> {
     Ok(serialize_response(&coin_stats))
 }
 
-/// deserialize `Info` from request's body
+/// deserialize `TouchbarParams` from request's body
 fn touchbar(params: Json<TouchbarParams>) -> Result<String> {
     print_to_touch_bar(params.price.clone());
 
@@ -35,7 +35,7 @@ fn touchbar(params: Json<TouchbarParams>) -> Result<String> {
 pub fn listen() {
 
     // refresh ticker every 60 seconds
-    refresh_ticker_thread();
+    spawn_refresh_ticker_thread();
 
     // launch API endpoint
     server::new( || App::new()
@@ -53,16 +53,17 @@ pub fn listen() {
 }
 
 // refresh the ticker fucking forever
-fn refresh_ticker_thread() {
+fn spawn_refresh_ticker_thread() {
     // Run the ticker before the webserver, to be sure we'll have it in Redis.
-    get_stats();
-
     thread::spawn(|| {
         let make_api_call = || {
-            get_stats();
+            match get_stats() {
+                Ok(_r) => (), // all good
+                Err(e) => println!("Thread error: {}", e)
+            };
 
-            thread::sleep(Duration::from_secs(60));
             // refresh
+            thread::sleep(Duration::from_secs(60));
         };
 
         loop {
