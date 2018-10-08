@@ -3,6 +3,8 @@ use util::thousands;
 use std::error::Error;
 use osascript::JavaScript;
 use math::Math;
+use redis_db;
+use ticker::CoinStats;
 
 #[derive(Serialize)]
 struct TouchBarParams {
@@ -13,10 +15,13 @@ struct TouchBarParams {
 pub fn print_to_touch_bar(amount: String) -> Result<(), Box<dyn Error>> {
     let widget_btc = String::from("1A9010BF-D26E-4016-BD99-5D78CA8496FF");
     let widget_nano = String::from("92B67153-3DF5-4C7A-9710-4E2AD52C0C88");
-    let stats = ticker::get_stats()?;
 
-    update_touch_bar(widget_btc, stats.bitcoin.price_usd, amount.clone());
-    update_touch_bar(widget_nano, stats.last_price_usd, amount);
+    // get ticker from redis
+    let con = redis_db::connection();
+    let coin_stats: CoinStats = redis_db::get(&con, "ticker");
+
+    update_touch_bar(widget_btc, coin_stats.bitcoin.price_usd, amount.clone());
+    update_touch_bar(widget_nano, coin_stats.last_price_usd, amount);
 
     Ok(())
 }
@@ -65,7 +70,7 @@ pub fn print_to_stdout() -> Result<(), Box<dyn Error>> {
     let img: &str;
 
     // generate stats, if any errors, they will be delegated to the caller (main.rs)
-    let stats = ticker::get_stats()?;
+    let stats = ticker::get_stats();
 
     // cast to float
     let percent_change_1h: f32 = stats.change1h.parse().unwrap();

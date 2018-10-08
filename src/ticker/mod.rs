@@ -6,9 +6,12 @@ use ticker::binance::BinanceTicker;
 use ticker::cmc::*;
 use util::thousands;
 use std::error::Error;
+use eventual::*;
+use serde_json;
+use redis_db;
 
 // NANO compiled stats
-#[derive(Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct CoinStats {
     pub last_price_btc: String,
     pub last_price_usd: String,
@@ -29,7 +32,7 @@ pub struct CoinStats {
 }
 
 // daily trading calculation
-#[derive(Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct DailyTrading {
     pub spread_btc: String,
     pub spread_usd: String,
@@ -37,7 +40,26 @@ pub struct DailyTrading {
     pub possible_gain_usd: String
 }
 
-pub fn get_stats() -> Result<CoinStats, Box<dyn Error>> {
+pub fn get_stats() -> CoinStats {
+    let con = redis_db::connection();
+    let coin_stats = compute().unwrap();
+
+//    let coin_stats = match compute() {
+//        Ok(s)  => s,
+//        Err(e) => {
+//            eprintln!("Can't call APIs: {}", e);
+//
+//        }
+//    };
+
+    redis_db::save(&con, "ticker", &coin_stats, 60);
+
+    coin_stats
+}
+
+fn compute() -> Result<CoinStats, Box<dyn Error>> {
+    println!("update stats");
+
     // unwrap return the "Ok" part
     let binance_nano_ticker = BinanceTicker::ticker("NANOBTC")?;
     let cmc_nano_ticker = CmcTicker::ticker("nano")?;

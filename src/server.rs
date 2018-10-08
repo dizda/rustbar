@@ -1,8 +1,12 @@
 use actix_web::{server, App, Json, Result, http, Path};
 use serde_json;
-use ticker;
 use ticker::CoinStats;
+use ticker::get_stats;
 use cli::print_to_touch_bar;
+use eventual::*;
+use std::thread;
+use std::time::Duration;
+use redis_db;
 
 #[derive(Deserialize)]
 struct TouchbarParams {
@@ -15,19 +19,8 @@ struct JsonError {
 }
 
 fn index(info: Path<()>) -> Result<String> {
-    let coin_stats = match ticker::get_stats() {
-        Ok(s)  => s,
-        Err(e) => {
-            eprintln!("Can't call APIs: {}", e);
-
-            // cast error from std::error::Error to String
-            let error = JsonError { error: e.to_string() };
-            // serialize the error to JSON
-            let json_err = serde_json::to_string(&error).unwrap();
-
-            return Ok(json_err);
-        }
-    };
+    let con = redis_db::connection();
+    let coin_stats: CoinStats = redis_db::get(&con, "ticker");
 
     Ok(serialize_response(&coin_stats))
 }
@@ -41,6 +34,10 @@ fn touchbar(params: Json<TouchbarParams>) -> Result<String> {
 
 pub fn listen() {
 
+    // refresh ticker every 60 seconds
+    refresh_ticker_thread();
+
+    // launch API endpoint
     server::new( || App::new()
         .resource(
             "/",
@@ -53,6 +50,26 @@ pub fn listen() {
         .unwrap()
         .run()
     ;
+}
+
+// refresh the ticker fucking forever
+fn refresh_ticker_thread() {
+    // Run the ticker before the webserver, to be sure we'll have it in Redis.
+    get_stats();
+
+    thread::spawn(|| {
+        let make_api_call = || {
+            get_stats();
+
+            thread::sleep(Duration::from_secs(5));
+            println!("refresh");
+        };
+
+        loop {
+            // infinite calls
+            make_api_call();
+        }
+    });
 }
 
 fn serialize_response(stats: &CoinStats) -> String {
