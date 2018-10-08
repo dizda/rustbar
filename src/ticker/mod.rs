@@ -58,8 +58,6 @@ pub fn get_stats() -> CoinStats {
 }
 
 fn compute() -> Result<CoinStats, Box<dyn Error>> {
-    println!("update stats");
-
     // unwrap return the "Ok" part
     let binance_nano_ticker = BinanceTicker::ticker("NANOBTC")?;
     let cmc_nano_ticker = CmcTicker::ticker("nano")?;

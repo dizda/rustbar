@@ -61,8 +61,8 @@ fn refresh_ticker_thread() {
         let make_api_call = || {
             get_stats();
 
-            thread::sleep(Duration::from_secs(5));
-            println!("refresh");
+            thread::sleep(Duration::from_secs(60));
+            // refresh
         };
 
         loop {
