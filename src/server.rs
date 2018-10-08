@@ -3,7 +3,6 @@ use serde_json;
 use ticker::CoinStats;
 use ticker::get_stats;
 use cli::print_to_touch_bar;
-use eventual::*;
 use std::thread;
 use std::time::Duration;
 use redis_db;
@@ -13,12 +12,7 @@ struct TouchbarParams {
     price: String,
 }
 
-#[derive(Serialize)]
-struct JsonError {
-    error: String
-}
-
-fn index(info: Path<()>) -> Result<String> {
+fn index(_info: Path<()>) -> Result<String> {
     let con = redis_db::connection();
     let coin_stats: CoinStats = redis_db::get(&con, "ticker");
 

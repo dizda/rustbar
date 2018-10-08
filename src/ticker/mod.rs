@@ -6,8 +6,6 @@ use ticker::binance::BinanceTicker;
 use ticker::cmc::*;
 use util::thousands;
 use std::error::Error;
-use eventual::*;
-use serde_json;
 use redis_db;
 
 // NANO compiled stats

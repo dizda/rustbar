@@ -12,7 +12,7 @@ struct TouchBarParams {
     label: String
 }
 
-pub fn print_to_touch_bar(amount: String) -> Result<(), Box<dyn Error>> {
+pub fn print_to_touch_bar(amount: String) {
     let widget_btc = String::from("1A9010BF-D26E-4016-BD99-5D78CA8496FF");
     let widget_nano = String::from("92B67153-3DF5-4C7A-9710-4E2AD52C0C88");
 
@@ -22,8 +22,6 @@ pub fn print_to_touch_bar(amount: String) -> Result<(), Box<dyn Error>> {
 
     update_touch_bar(widget_btc, coin_stats.bitcoin.price_usd, amount.clone());
     update_touch_bar(widget_nano, coin_stats.last_price_usd, amount);
-
-    Ok(())
 }
 
 fn update_touch_bar(widget_uuid: String, ticker_price: String, amount: String) {
