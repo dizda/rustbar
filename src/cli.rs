@@ -51,10 +51,7 @@ fn update_touch_bar(widget_uuid: String, ticker_price: String, amount: String) {
         widget_uuid,
         label: amount
     }).unwrap_or_else(|err| {
-//        eprintln!("Problem sending AppleScript: {}", err);
-
-        // needs to implement the correct std::error::Error Trait
-//        Err(err.to_string())
+        eprintln!("Problem sending AppleScript: {}", err);
     });
 }
 
