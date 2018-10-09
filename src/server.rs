@@ -47,6 +47,7 @@ pub fn listen() {
 }
 
 // refresh the ticker fucking forever
+// store the ticker result in Redis, as I don't know how to pass messages between threads.
 fn spawn_refresh_ticker_thread() {
     // Run the ticker before the webserver, to be sure we'll have it in Redis.
     thread::spawn(|| {
