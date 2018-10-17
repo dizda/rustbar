@@ -6,6 +6,7 @@ use ticker::COIN_STATS;
 use cli::print_to_touch_bar;
 use std::thread;
 use std::time::Duration;
+use std::env;
 
 // interval to refresh the tickers
 const REFRESH_TICKER_INTERVAL: u64 = 60;
@@ -34,6 +35,10 @@ pub fn listen() {
     // refresh ticker every 60 seconds
     spawn_refresh_ticker_thread();
 
+    let listen_on = env::var("RUSTBAR_LISTEN_ON").unwrap_or("127.0.0.1:3000".to_string());
+
+    println!("Listening on {}.", listen_on);
+
     // launch API endpoint
     server::new( || App::new()
         .resource(
@@ -43,7 +48,7 @@ pub fn listen() {
             "/touchbar/",
             |r| r.method(http::Method::POST).with(touchbar))
         )
-        .bind("127.0.0.1:3000")
+        .bind(listen_on)
         .unwrap()
         .run()
     ;
