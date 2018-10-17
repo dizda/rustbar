@@ -4,7 +4,7 @@ extern crate serde_json;
 extern crate hyper;
 extern crate osascript;
 extern crate actix_web;
-extern crate redis;
+#[macro_use] extern crate lazy_static;
 
 // internal files
 pub mod math;
@@ -12,7 +12,6 @@ pub mod ticker;
 mod util;
 mod cli;
 mod server;
-mod redis_db;
 
 use std::process;
 

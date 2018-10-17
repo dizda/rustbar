@@ -1,6 +1,6 @@
 [package]
 name = "rustbar"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Jonathan Dizdarevic <dizzda@gmail.com>"]
 
 [dependencies]
@@ -14,3 +14,4 @@ hyper = "0.12"
 osascript = "0.3.0"
 actix-web = "0.7"
 redis = "0.9"
+lazy_static = "1.1.0"

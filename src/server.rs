@@ -2,10 +2,13 @@ use actix_web::{server, App, Json, Result, http, Path};
 use serde_json;
 use ticker::CoinStats;
 use ticker::get_stats;
+use ticker::COIN_STATS;
 use cli::print_to_touch_bar;
 use std::thread;
 use std::time::Duration;
-use redis_db;
+
+// interval to refresh the tickers
+const REFRESH_TICKER_INTERVAL: u64 = 60;
 
 #[derive(Deserialize)]
 struct TouchbarParams {
@@ -13,8 +16,8 @@ struct TouchbarParams {
 }
 
 fn index(_info: Path<()>) -> Result<String> {
-    let con = redis_db::connection();
-    let coin_stats: CoinStats = redis_db::get(&con, "ticker");
+    // acquire the lock on the global static in order to be thread-safe
+    let coin_stats = COIN_STATS.lock().unwrap();
 
     Ok(serialize_response(&coin_stats))
 }
@@ -47,9 +50,9 @@ pub fn listen() {
 }
 
 // refresh the ticker fucking forever
-// store the ticker result in Redis, as I don't know how to pass messages between threads.
+// store the ticker result in a global static, as I don't know how to pass messages between threads.
 fn spawn_refresh_ticker_thread() {
-    // Run the ticker before the webserver, to be sure we'll have it in Redis.
+    // Run the ticker before the webserver, to be sure we'll have it in the global static.
     thread::spawn(|| {
         let make_api_call = || {
             match get_stats() {
@@ -58,7 +61,7 @@ fn spawn_refresh_ticker_thread() {
             };
 
             // refresh
-            thread::sleep(Duration::from_secs(60));
+            thread::sleep(Duration::from_secs(REFRESH_TICKER_INTERVAL));
         };
 
         loop {

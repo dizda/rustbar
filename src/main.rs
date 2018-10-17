@@ -6,7 +6,7 @@ use clap::{Arg, App};
 fn main() {
 
     let matches = App::new("RustBar")
-        .version("0.1.0")
+        .version("0.3.0")
         .author("Jonathan Dizdarevic <dizda@dizda.fr>")
         .about("BitBar and HTTP API")
         .args(&[

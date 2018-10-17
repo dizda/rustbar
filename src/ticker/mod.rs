@@ -6,10 +6,15 @@ use ticker::binance::BinanceTicker;
 use ticker::cmc::*;
 use util::thousands;
 use std::error::Error;
-use redis_db;
+use std::sync::Mutex;
+
+lazy_static! {
+    // Default initialize the struct with empty values.
+    pub static ref COIN_STATS: Mutex<CoinStats> = Mutex::new(CoinStats::default());
+}
 
 // NANO compiled stats
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Default)]
 pub struct CoinStats {
     pub last_price_btc: String,
     pub last_price_usd: String,
@@ -30,7 +35,7 @@ pub struct CoinStats {
 }
 
 // daily trading calculation
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Default)]
 pub struct DailyTrading {
     pub spread_btc: String,
     pub spread_usd: String,
@@ -38,14 +43,12 @@ pub struct DailyTrading {
     pub possible_gain_usd: String
 }
 
-// Get tickers then save them in Redis for 60s
-pub fn get_stats() -> Result<CoinStats, Box<dyn Error>> {
-    let con = redis_db::connection();
-    let coin_stats = compute()?;
+// Get tickers then save them in a global static
+pub fn get_stats() -> Result<(), Box<dyn Error>> {
+    // overwrite the global static
+    *COIN_STATS.lock().unwrap() = compute()?;
 
-    redis_db::save(&con, "ticker", &coin_stats, 60);
-
-    Ok(coin_stats)
+    Ok(())
 }
 
 // Build the struct
