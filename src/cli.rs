@@ -76,36 +76,36 @@ pub fn print_to_stdout() -> Result<(), Box<dyn Error>> {
         img = img_down;
     }
 
-    println!("{} (${}) | image={} color=#000000", stats.last_price_btc, stats.last_price_usd, img);
+    println!("{} (${}) | image={}", stats.last_price_btc, stats.last_price_usd, img);
 
     println!("---");
 
     println!("NANO | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUxpcVSJykmQ4kaS3lKLzWyUxESF2V+W0FKV7lGJyU6O4EmR3k6P3lSU6EyP3kmT30qP4keU3kCT5kWS4UiR4VKL4EOT40OQ6ESS5UWQ5kiQ4v2G/RwAAAAKdFJOUwDr///+EP4F/tfCPIxYAAAAQ0lEQVQY02NgoBngkoAy+ATBFIukFITPzs0LJDlEGBkYmJiAXGFxsDAHMztEgJNZFMQVgGpnFWMD0/w8UAEhLto5GgDaMgGRTwkAAgAAAABJRU5ErkJggg==");
     println!("buy: {} | color=green", stats.buy_btc);
     println!("sell: {} | color=red", stats.sell_btc);
-    println!("vol: {} BTC (${}) | color=#000000", stats.volume_btc, stats.volume_usd);
-    println!("change-24h: {}% | color=#000000", stats.change24h);
-    println!("high: {} (${}) | color=#000000", stats.high_btc, stats.high_usd);
-    println!("low: {} (${}) | color=#000000", stats.low_btc, stats.low_usd);
-    println!("price: ${} | color=#000000", stats.price);
-    println!("rank: #{} | color=#000000", stats.rank);
+    println!("vol: {} BTC (${})", stats.volume_btc, stats.volume_usd);
+    println!("change-24h: {}%", stats.change24h);
+    println!("high: {} (${})", stats.high_btc, stats.high_usd);
+    println!("low: {} (${})", stats.low_btc, stats.low_usd);
+    println!("price: ${}", stats.price);
+    println!("rank: #{}", stats.rank);
 
     println!("---");
 
 
     println!("NANO daily-trading | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUxpcVSJykmQ4kaS3lKLzWyUxESF2V+W0FKV7lGJyU6O4EmR3k6P3lSU6EyP3kmT30qP4keU3kCT5kWS4UiR4VKL4EOT40OQ6ESS5UWQ5kiQ4v2G/RwAAAAKdFJOUwDr///+EP4F/tfCPIxYAAAAQ0lEQVQY02NgoBngkoAy+ATBFIukFITPzs0LJDlEGBkYmJiAXGFxsDAHMztEgJNZFMQVgGpnFWMD0/w8UAEhLto5GgDaMgGRTwkAAgAAAABJRU5ErkJggg==");
 
-    println!("swing: {} (${}) | color=#000000", stats.daily_trading.spread_btc, stats.daily_trading.spread_usd);
-    println!("possible gain: {} BTC (${}) | color=#000000", stats.daily_trading.possible_gain_btc, stats.daily_trading.possible_gain_usd);
+    println!("swing: {} (${})", stats.daily_trading.spread_btc, stats.daily_trading.spread_usd);
+    println!("possible gain: {} BTC (${})", stats.daily_trading.possible_gain_btc, stats.daily_trading.possible_gain_usd);
 
     println!("---");
 
     println!("Bitcoin | image=iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC3klEQVR4nGWTTWicVRSGn3Pv/b75sWkSaTQmNSWgiHZjS6DGFCd2pRTcaDcRFy5MaNq6UXCnuNdFF7ZaEUFUsCgIWkTB2lmISN0IdiH+1AaZSir9SSeZmfvde46LQVRcHDiL8/DCeXkEwAwRwQDih48ueO+XVa2l2aYAxEuncHKuyvnN8onPvv43I38vF99u1XeONF4RZMUXEiwqKSuYEooSKYSccjKzU+Fm/zl5ut03Q8ROH/JMrBfVleJMsa08MLg+MEwVcOKCEOpY76ohTvE1VxsrperGs8VEdZArt1UC0H938URtvHZ4cLUfRSgJdYg3kcm9uJmHscvnIfXJnW/B12NtvCzjjXiitvTVEYnv798H7htTU8N5qi7uzocIe1dBPDa4jtRGSd8dR3/7EpoTJpZVnDjQeafZjhXBRHMCrSA00LU2utZGxmYBgcat+PuXkTvmIHZFVRkydsyhqaWxAlOHZTDFqk2oj0PqET8+RPzgEdyO3RQLL4JGsOw0VqDVYkDzZKUgMCxSDClHcJNz4MshlPqQ+uj696AJMZUqKWY26UyTDJMzAGytI+UIsn2a/Ovn2GADv3sJLJMvvAdmw1sdjhPLfxSimKlRbeKm5/F7VkAc+Yd3qD49SvzkKQgN/H1LUG1hqlaI4tDLAdNzLvAkfVPywMv0PG7nfkAID7yAv+sx3O17QBx27WcwBc3qSvPW17bEt+7dh9mwRgnOuh3x9zxOmHsWi11kbBa79gv25wXS+ePDHziXxeEq5UEB2Hr97tcao361dyNHUq/0My0ITfxMi/zjR+SLXyC17RCaGBIbY6HsbeSTzZWfVsVO49ncVcQYzpTb5EBvw4zUV0ydNHcIqYcZBiimrjHqJHbtbFmmg9xyqfpHppd21aem7VVnLIfgQ06QqgrEEbzgCyElS8Abv3d4fvblS0OZ/qfzyZkF7/WZlFnUzBQY3ktHHG1Td6o8vPYfnf8CyHGVDNs26GQAAAAASUVORK5CYII=");
 
-    println!("price:  ${} | color=#000000", thousands(&stats.bitcoin.price_usd, 2));
-    println!("change 1h:  {}% | color=#000000", stats.bitcoin.percent_change_1h);
-    println!("change 24h:  {}% | color=#000000", stats.bitcoin.percent_change_24h);
-    println!("change 7d:  {}% | color=#000000", stats.bitcoin.percent_change_7d);
+    println!("price:  ${}", thousands(&stats.bitcoin.price_usd, 2));
+    println!("change 1h:  {}%", stats.bitcoin.percent_change_1h);
+    println!("change 24h:  {}%", stats.bitcoin.percent_change_24h);
+    println!("change 7d:  {}%", stats.bitcoin.percent_change_7d);
 
     println!("---");
 
