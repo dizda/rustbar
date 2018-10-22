@@ -54,17 +54,21 @@ pub fn get_stats() -> Result<(), Box<dyn Error>> {
 // Build the struct
 fn compute() -> Result<CoinStats, Box<dyn Error>> {
     // unwrap return the "Ok" part
-    let binance_nano_ticker = BinanceTicker::ticker("NANOBTC")?;
+    let binance_nano_btc_ticker = BinanceTicker::ticker("NANOBTC")?;
+    let binance_btc_usdt_ticker = BinanceTicker::ticker("BTCUSDT")?;
     let cmc_nano_ticker = CmcTicker::ticker("nano")?;
     let cmc_btc_ticker = CmcTicker::ticker("bitcoin")?;
+    // the BTC price is actually USDT's one
+    let price_btc_in_usd = &binance_btc_usdt_ticker.last_price;
+    let price_nano_in_usd = &binance_nano_btc_ticker.last_price.multiply(&price_btc_in_usd, 8);
 
     // Calculate
-    let spread_24h_btc = binance_nano_ticker.high_price.sub(&binance_nano_ticker.low_price, 8);
-    let spread_24h_usd = thousands(&spread_24h_btc.multiply(&cmc_btc_ticker.price_usd, 2), 2);
+    let spread_24h_btc = binance_nano_btc_ticker.high_price.sub(&binance_nano_btc_ticker.low_price, 8);
+    let spread_24h_usd = thousands(&spread_24h_btc.multiply(&price_btc_in_usd, 2), 2);
 
     // gain if we swingtrade with 100k NANO
     let possible_gain_btc = spread_24h_btc.multiply(&100000_f64.to_string(), 2);
-    let possible_gain_usd = thousands(&possible_gain_btc.multiply(&cmc_btc_ticker.price_usd, 8), 2);
+    let possible_gain_usd = thousands(&possible_gain_btc.multiply(&price_btc_in_usd, 8), 2);
 
     let daily_trading = DailyTrading {
         spread_btc: spread_24h_btc,
@@ -74,19 +78,19 @@ fn compute() -> Result<CoinStats, Box<dyn Error>> {
     };
 
     let ticker = CoinStats {
-        last_price_btc: binance_nano_ticker.last_price,
-        last_price_usd: thousands(&cmc_nano_ticker.price_usd, 2),
-        buy_btc: binance_nano_ticker.bid_price,
-        sell_btc: binance_nano_ticker.ask_price,
+        last_price_btc: binance_nano_btc_ticker.last_price,
+        last_price_usd: thousands(&price_nano_in_usd, 2),
+        buy_btc: binance_nano_btc_ticker.bid_price,
+        sell_btc: binance_nano_btc_ticker.ask_price,
         volume_btc: thousands(&cmc_nano_ticker.last_24h_volume_btc, 0),
         volume_usd: thousands(&cmc_nano_ticker.last_24h_volume_usd, 0),
         change1h: cmc_nano_ticker.percent_change_1h,
         change24h: cmc_nano_ticker.percent_change_24h,
-        high_btc: binance_nano_ticker.high_price.to_string(),
-        high_usd: thousands(&cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.high_price, 2), 2),
-        low_btc: binance_nano_ticker.low_price.to_string(),
-        low_usd: thousands(&cmc_btc_ticker.price_usd.multiply(&binance_nano_ticker.low_price, 2), 2),
-        price: thousands(&cmc_nano_ticker.price_usd, 2),
+        high_btc: binance_nano_btc_ticker.high_price.to_string(),
+        high_usd: thousands(&price_btc_in_usd.multiply(&binance_nano_btc_ticker.high_price, 2), 2),
+        low_btc: binance_nano_btc_ticker.low_price.to_string(),
+        low_usd: thousands(&price_btc_in_usd.multiply(&binance_nano_btc_ticker.low_price, 2), 2),
+        price: thousands(&price_btc_in_usd, 2),
         rank: cmc_nano_ticker.rank,
         bitcoin: cmc_btc_ticker,
         daily_trading
