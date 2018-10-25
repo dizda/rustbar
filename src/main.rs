@@ -3,12 +3,17 @@ extern crate rustbar;
 
 use clap::{Arg, App};
 
+const NAME: &'static str = env!("CARGO_PKG_NAME");
+const AUTHOR: &'static str = env!("CARGO_PKG_AUTHORS");
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const ABOUT: &'static str = "BitBar and HTTP API.";
+
 fn main() {
 
-    let matches = App::new("RustBar")
-        .version("0.3.0")
-        .author("Jonathan Dizdarevic <dizda@dizda.fr>")
-        .about("BitBar and HTTP API")
+    let matches = App::new(NAME)
+        .version(VERSION)
+        .author(AUTHOR)
+        .about(ABOUT)
         .args(&[
             Arg::with_name("server")
                 .short("s")
